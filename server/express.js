@@ -28,7 +28,7 @@ app.use((err, req, res, next) => {
   if (err instanceof HttpError) {
     res.status(err.code).json({ message: err.message });
   } else {
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -46,12 +46,12 @@ mongoose
   });
 
 // Wait for connection to be established
-mongoose.connection.once('open', async function() {
+mongoose.connection.once("open", async function () {
   // Retrieve the collections in the database
   const collections = await mongoose.connection.db.listCollections().toArray();
-  
+
   // Log the names of the collections
-  collections.forEach(function(collection) {
+  collections.forEach(function (collection) {
     console.log(collection.name);
   });
 });
