@@ -14,10 +14,10 @@ const userSignup = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw new HttpError("Invalid inputs, please check yo-self", 422);
+      throw new HttpError("Invalid inputs", 422);
     }
 
-    const { firstName, lastName, phone, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     const existingUser = await usersDB.find({ email: email });
     if (existingUser) {
@@ -99,35 +99,30 @@ const updateUserById = async (req, res, next) => {
   const newItem = req.body;
 
   try {
-    const hasUser = await usersDB.find({ email: newItem.email });
+    const existingUser = await usersDB.find({ email: newItem.email });
 
-    if (hasUser && hasUser._id !== id) {
+    if (existingUser && existingUser._id !== id) {
       throw new HttpError("Email is already in use", 422);
     }
 
-    const updatedUser = await usersDB.update(id);
-    if (!updatedUser) {
+    const docAndSave = await usersDB.update(id);
+    if (!docAndSave) {
       throw new HttpError("Could not find a user for the provided id", 404);
     }
 
-    const doc = updatedUser.doc;
+    const { doc, save } = docAndSave;
     doc.firstName = newItem.firstName;
     doc.lastName = newItem.lastName;
-    doc.phone = newItem.phone;
     doc.email = newItem.email;
     doc.password = newItem.password;
-    if (newItem.bio) {
-      doc.bio = newItem.bio;
-    }
 
-    try {
-      updatedUser.save();
-    } catch (error) {
-      throw new HttpError("Could not update. Please try again.", 500);
-    }
+    save();
 
     res.json({ doc });
   } catch (error) {
+    if (error instanceof HttpError) {
+      return next(error);
+    }
     next(new HttpError("Failed to update user. Please try again later.", 500));
   }
 };

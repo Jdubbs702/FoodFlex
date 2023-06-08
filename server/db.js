@@ -1,3 +1,5 @@
+const HttpError = require("./models/http-error");
+
 class DB {
   constructor(Schema) {
     this.Schema = Schema;
@@ -9,8 +11,7 @@ class DB {
     try {
       await createdItem.save();
     } catch (err) {
-      console.error(err);
-      return { message: "Failed to save. Please try again." };
+      throw new HttpError("Failed to save. Please try again.", 500);
     }
     return createdItem;
   };
@@ -21,8 +22,7 @@ class DB {
     try {
       allData = await this.Schema.find({}, "-password").exec();
     } catch (err) {
-      console.error(err);
-      return { message: "Failed to get data. Please try again." };
+      throw new HttpError("Failed to get data. Please try again.", 500);
     }
     return allData;
   };
@@ -32,8 +32,7 @@ class DB {
     try {
       item = await this.Schema.findById(id);
     } catch (err) {
-      console.error(err);
-      return { message: "Failed to get data. Please try again." };
+      throw new HttpError("Failed to get data. Please try again.", 500);
     }
     return item;
   };
@@ -43,8 +42,7 @@ class DB {
     try {
       itemsArray = await this.Schema.find({ userId: userId });
     } catch (err) {
-      console.error(err);
-      return { message: "Failed to get data. Please try again." };
+      throw new HttpError("Failed to get data. Please try again.", 500);
     }
     return itemsArray;
   };
@@ -54,8 +52,7 @@ class DB {
       const queriedItem = await this.Schema.findOne(filter);
       return queriedItem;
     } catch (err) {
-      console.error(err);
-      return { message: "Failed to find data. Please try again." };
+      throw new HttpError("Failed to find data. Please try again.", 500);
     }
   };
 
@@ -64,33 +61,29 @@ class DB {
       const queriedItems = await this.Schema.find(filter);
       return queriedItems;
     } catch (err) {
-      console.error(err);
-      return { message: "Failed to find data. Please try again." };
+      throw new HttpError("Failed to find data. Please try again.", 500);
     }
   };
 
   //update
   update = async (id) => {
-    console.log("id", id);
     let doc;
     try {
       doc = await this.Schema.findById(id);
     } catch (err) {
-      console.error(err);
-      return { message: "Could not find the document." };
+      throw new HttpError("Could not find the document.", 404);
     }
-    const callback = () => {
+    const save = () => {
       try {
         doc.save({
           validateModifiedOnly: true,
         });
       } catch (err) {
-        console.error(err);
-        return { message: "Failed to save the document. Please try again." };
+        throw new HttpError("Failed to save the document. Please try again.", 500);
       }
     };
 
-    return { doc: doc, save: callback };
+    return { doc, save };
   };
 
   //delete
@@ -99,8 +92,7 @@ class DB {
     try {
       await doc.remove();
     } catch (err) {
-      console.error(err);
-      return { message: "Could not delete item." };
+      throw new HttpError("Could not delete item.", 500);
     }
   };
 }
