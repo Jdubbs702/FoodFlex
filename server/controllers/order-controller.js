@@ -1,8 +1,6 @@
 // Import necessary modules and models
 const HttpError = require("../models/http-error");
-const {
-  getAdminEmailByClientName,
-} = require("../controllers/users-controller");
+const { getAdminEmailByClientName } = require("../controllers/users-controller");
 const OrderModel = require("../models/orders");
 const DB = require("../db");
 const emailController = require("../controllers/email-controller");
