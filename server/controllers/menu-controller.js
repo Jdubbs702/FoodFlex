@@ -9,22 +9,43 @@ if (fs.existsSync(CONFIG_FILE_PATH)) {
   const fileData = fs.readFileSync(CONFIG_FILE_PATH, "utf-8");
   clientConfigurations = JSON.parse(fileData);
 }
-// API endpoint for the client to configure their menu options
-// The API needs to receive an object that looks like this:
-// { "clientId": "abc123", "category": "bread", "options": ["sourdough", "whole wheat"]}
-const configClientMenu = async (req, res) => {
-  try {
-    const { clientId, category, options } = req.body;
 
-    if (!clientConfigurations[clientId]) {
-      clientConfigurations[clientId] = {};
+// API endpoint for the client to configure their menu options
+// The API needs to receive an array of category-option pairs that looks like this:
+// [
+//   {
+//     "category": "bread",
+//     "options": ["sourdough", "whole wheat"]
+//   },
+//   {
+//     "category": "sauce",
+//     "options": ["mayo", "mustard", "ketchup"]
+//   },
+// ]
+const configClientMenu = async (req, res) => {
+  const clientName = req.params.clientName; // abc123
+  try {
+    const configData = req.body;
+
+    if (!clientConfigurations[clientName]) {
+      clientConfigurations[clientName] = {};
     }
 
-    clientConfigurations[clientId][category] = options;
-    // After one request, the clientConfigurations object would look like this:
+    // Update the client configurations with the provided options
+    configData.forEach(({ category, options }) => {
+      if (clientConfigurations[clientName][category]) {
+        // Options already exist, update them by pushing the new options
+        clientConfigurations[clientName][category].push(...options);
+      } else {
+        // Options don't exist, create a new array with the provided options
+        clientConfigurations[clientName][category] = options;
+      }
+    });
+    // After the request, the clientConfigurations object would look like this:
     // {
     //   "abc123": {
-    //     "bread": ["sourdough", "whole wheat"]
+    //     "bread": ["sourdough", "whole wheat"],
+    //     "sauce": ["mayo", "mustard", "ketchup"]
     //   }
     // }
 
@@ -41,24 +62,22 @@ const configClientMenu = async (req, res) => {
 };
 
 // API endpoint for the client to request menu options for building a sandwich
-const getMenuById = (req, res) => {
-  const clientId = req.query.clientId;
+const getClientMenuOptions = (req, res) => {
+  const clientName = req.params.clientName;
 
-  if (clientId && clientConfigurations[clientId]) {
-    const clientConfiguration = clientConfigurations[clientId];
-
-    const menuOptions = {};
-    for (const category in clientConfiguration) {
-      if (menuOptionsDB[category]) {
-        menuOptions[category] = menuOptionsDB[category].filter((option) =>
-          clientConfiguration[category].includes(option)
-        );
-      }
-    }
-
-    res.json(menuOptions);
+  if (clientName && clientConfigurations[clientName]) {
+    const clientConfiguration = clientConfigurations[clientName];
+    res.json(clientConfiguration);
   } else {
     throw new HttpError("Invalid client identifier", 400);
+  }
+};
+
+const getCommonOptions = (req, res) => {
+  try {
+    res.json(menuOptionsDB)
+  } catch (error) {
+    throw new HttpError("Failed to get menu options", 500);
   }
 };
 
@@ -84,5 +103,8 @@ const menuOptionsDB = {
   beverages: ["Soft drinks", "Iced tea", "Lemonade", "Water"],
 };
 
-exports.configClientMenu = configClientMenu;
-exports.getMenuById = getMenuById;
+module.exports = {
+  getCommonOptions,
+  configClientMenu,
+  getClientMenuOptions
+};

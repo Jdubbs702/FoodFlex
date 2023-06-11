@@ -7,7 +7,6 @@ const checkAuth = require("../middleware/check-auth");
 const router = express.Router();
 
 //users routes
-
 router.post(
   "/signup",
   userValidators.signupValidator,
@@ -20,10 +19,10 @@ router.get("/:userId", usersController.getUserById);
 
 router.use(checkAuth); //for logged in users
 
-router.put(
+router.put( //protected to loggedIn user
   "/:userId",
   userValidators.updateUserValidator,
   usersController.updateUserById
-); //protected to loggedIn user
+); 
 
 module.exports = router;

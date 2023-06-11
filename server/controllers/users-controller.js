@@ -9,7 +9,7 @@ const HttpError = require("../models/http-error");
 const usersDB = new DB(UserModel);
 const secretCode = "super_secret_dont_share";
 
-//create
+// create
 const userSignup = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -17,30 +17,33 @@ const userSignup = async (req, res, next) => {
       throw new HttpError("Invalid inputs", 422);
     }
 
-    const { firstName, lastName, email, password } = req.body;
+    const { clientName, email, password } = req.body;
 
-    const existingUser = await usersDB.find({ email: email });
-    if (existingUser) {
+    const nameExists = await usersDB.find({ clientName: { $regex: new RegExp(`^${clientName}$`, "i") } });
+    if (nameExists) {
+      throw new HttpError("Client name already exists", 422);
+    }
+
+    const emailExists = await usersDB.find({ email: { $regex: new RegExp(`^${email}$`, "i") } });
+    if (emailExists) {
       throw new HttpError("Email already exists", 422);
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const constructedUser = {
-      firstName,
-      lastName,
-      phone,
+      clientName,
       email,
       password: hashedPassword,
     };
     const newUser = await usersDB.add(constructedUser);
 
     const token = jwt.sign(
-      { userId: newUser.id, email: newUser.email },
+      { userId: newUser.id },
       secretCode,
       { expiresIn: "1h" }
     );
 
-    res.status(201).json({ user: newUser, token: token });
+    res.status(201).json({ token: token, clientName: clientName });
   } catch (error) {
     next(new HttpError("Signup failed. Please try again later.", 500));
   }
@@ -64,25 +67,25 @@ const userLogin = async (req, res, next) => {
     }
 
     const token = jwt.sign(
-      { userId: identifiedUser.id, email: identifiedUser.email },
+      { userId: identifiedUser.id },
       secretCode,
       { expiresIn: "1h" }
     );
 
-    res.json({ user: identifiedUser, token: token });
+    res.json({ token: token, clientName: identifiedUser.clientName });
   } catch (error) {
     next(new HttpError("Login failed. Please try again later.", 500));
   }
 };
 
 //read
-const getUserById = async (req, res, next) => {
+const getAdminEmailByClientName = async (clientName) => {
   try {
-    const user = await usersDB.getById(req.params.userId);
+    const user = await usersDB.getById(clientName);
     if (!user) {
-      throw new HttpError("Could not find a user for the provided id", 404);
+      throw new HttpError("Could not find a user for the provided client name", 404);
     }
-    res.json({ user });
+    res.json({ adminEmail: user.email });
   } catch (error) {
     next(new HttpError("Failed to fetch user. Please try again later.", 500));
   }
@@ -127,7 +130,9 @@ const updateUserById = async (req, res, next) => {
   }
 };
 
-exports.userSignup = userSignup;
-exports.userLogin = userLogin;
-exports.getUserById = getUserById;
-exports.updateUserById = updateUserById;
+module.exports = {
+  userSignup,
+  userLogin,
+  getAdminEmailByClientName,
+  updateUserById
+};

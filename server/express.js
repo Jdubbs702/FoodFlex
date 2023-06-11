@@ -6,7 +6,9 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 
 const HttpError = require("./models/http-error");
-const firstRoute = require("");
+const usersRoutes = require("./routes/users");
+const menuRoutes = require("./routes/menus");
+const orderRoutes = require("./routes/orders");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,6 +16,7 @@ const PORT = process.env.PORT || 5000;
 app.use(
   cors({
     origin: ["http://127.0.0.1:3000", "http://localhost:3000"],
+    optionsSuccessStatus: 200,
   })
 );
 
@@ -21,7 +24,9 @@ app.use(bodyParser.json());
 app.use(morgan("tiny"));
 
 //routes
-app.use("/routeName", firstRoute);
+app.use("/orders", orderRoutes)
+app.use("/users", usersRoutes);
+app.use("/menu", menuRoutes);
 
 //error handling
 app.use((err, req, res, next) => {
