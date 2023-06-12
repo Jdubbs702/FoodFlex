@@ -1,7 +1,10 @@
+const fs = require('fs');
+const path = require("path");
+
 const HttpError = require("../models/http-error");
 
 // Add client-specific identifiers to endpoints to distinguish between different clients
-const CONFIG_FILE_PATH = "../config/client-menus.json";
+const CONFIG_FILE_PATH = path.join(__dirname, "../config/client-menus.json");
 
 // Load client configurations from file
 let clientConfigurations = {};
@@ -57,6 +60,8 @@ const configClientMenu = async (req, res) => {
 
     res.json({ message: "Configuration saved successfully" });
   } catch (error) {
+    console.error(error);
+
     throw new HttpError("Configuration save failed", 500);
   }
 };

@@ -13,16 +13,21 @@ router.post(
   usersController.userSignup
 );
 
-router.post("/login", usersController.userLogin); //validation not needed(email and password are already being matched/compared)
+router.post(
+  "/login",
+  userValidators.loginUserValidator,
+  usersController.userLogin
+);
 
-router.get("/:userId", usersController.getUserById);
+router.get("/:userId", usersController.getAdminEmailByClientName);
 
 router.use(checkAuth); //for logged in users
 
-router.put( //protected to loggedIn user
+router.put(
+  //protected to loggedIn user
   "/:userId",
   userValidators.updateUserValidator,
   usersController.updateUserById
-); 
+);
 
 module.exports = router;

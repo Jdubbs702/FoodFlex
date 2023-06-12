@@ -17,7 +17,11 @@ const userSignup = async (req, res, next) => {
       throw new HttpError("Invalid inputs", 422);
     }
 
-    const { clientName, email, password } = req.body;
+    const { clientName, email, password, repassword } = req.body;
+
+    if (password != repassword) {
+      throw new HttpError("Passwords do not match", 422);
+    }
 
     const nameExists = await usersDB.find({ clientName: { $regex: new RegExp(`^${clientName}$`, "i") } });
     if (nameExists) {
@@ -45,6 +49,7 @@ const userSignup = async (req, res, next) => {
 
     res.status(201).json({ token: token, clientName: clientName });
   } catch (error) {
+    console.error(error);
     next(new HttpError("Signup failed. Please try again later.", 500));
   }
 };
@@ -114,8 +119,7 @@ const updateUserById = async (req, res, next) => {
     }
 
     const { doc, save } = docAndSave;
-    doc.firstName = newItem.firstName;
-    doc.lastName = newItem.lastName;
+    doc.clientName = newItem.clientName;
     doc.email = newItem.email;
     doc.password = newItem.password;
 

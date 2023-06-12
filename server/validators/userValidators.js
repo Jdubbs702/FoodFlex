@@ -4,12 +4,9 @@ const { body } = require("express-validator");
 const len = 6;
 
 // Common validators
-const firstNameValidator = body("firstName")
+const clientNameValidator = body("clientName")
   .notEmpty()
-  .withMessage("First name is required");
-const lastNameValidator = body("lastName")
-  .notEmpty()
-  .withMessage("Last name is required");
+  .withMessage("Client name is required");
 const emailValidator = body("email")
   .isEmail()
   .withMessage("Invalid email format");
@@ -18,8 +15,7 @@ const passwordValidator = body("password")
   .withMessage(`Password must be at least ${len} characters long`);
 
 const signupValidator = [
-  firstNameValidator,
-  lastNameValidator,
+  clientNameValidator,
   emailValidator,
   passwordValidator,
   body("repassword")
@@ -27,14 +23,19 @@ const signupValidator = [
     .withMessage(`Confirm password must be at least ${len} characters long`),
 ];
 
-const updateUserValidator = [
-  firstNameValidator,
-  lastNameValidator,
+const loginUserValidator = [
   emailValidator,
-  passwordValidator,
+  passwordValidator
+];
+
+const updateUserValidator = [
+  clientNameValidator,
+  emailValidator,
+  passwordValidator
 ];
 
 module.exports = {
   signupValidator,
+  loginUserValidator,
   updateUserValidator,
 };
