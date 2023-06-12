@@ -13,6 +13,11 @@
 - Created user input validators
 - Created dev progress markdown
 
+## Backend Setup - June 8
+- Created `menu.js` (in `routes` directory) w routes for client config and order placing
+- Created `menu-controller.js` with apis for getting common menu options, setting the menu, and placing orders
+- Created `client-menus.json` (in `config` directory) for storing client menu options (may change to remote db)
+
 # Development Progress - Week 2
 (June 11-17, 2023)
 
@@ -23,4 +28,7 @@
 - Created `orders.js`(in `routes` directory) for order route
 - Created `order-controller.js` for creating new orders
 - Created `email-controller.js`: handles user confirmation and admin notification emails
+
+## Backend Setup - June 12
+- Tested and de-bugged all endpoints and auth middleware
   
