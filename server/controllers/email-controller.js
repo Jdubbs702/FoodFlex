@@ -13,14 +13,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 // Function to send an order confirmation email to the user
-const sendOrderConfirmationEmail = async (userEmail, order) => {
+const sendOrderConfirmationEmail = async ({userEmail, order}) => {
   try {
     // Compose the email
     const mailOptions = {
       from: adminEmail,
       to: userEmail,
       subject: "Order Confirmation",
-      text: `Thank you for your order!\n\nOrder details:\n${order}`,
+      text: `Thank you for your order!\n\nOrder details:\n${JSON.stringify(order)}`,
     };
 
     // Send the email
@@ -32,18 +32,14 @@ const sendOrderConfirmationEmail = async (userEmail, order) => {
 };
 
 // Function to send an order notification to the client admin
-const sendOrderNotificationToAdmin = async (userEmail, newOrder) => {
+const sendOrderNotificationToAdmin = async (adminEmail, {userEmail, order}) => {
   try {
     // Compose the email
     const mailOptions = {
       from: userEmail,
       to: adminEmail,
       subject: "New Order Notification",
-      text: `You have received a new order!\n\nOrder details:\n${JSON.stringify(
-        newOrder,
-        null,
-        2
-      )}`,
+      text: `You have received a new order!\n\nOrder details:\n${JSON.stringify(order)}`,
     };
 
     // Send the email

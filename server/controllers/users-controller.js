@@ -86,13 +86,14 @@ const userLogin = async (req, res, next) => {
 //read
 const getAdminEmailByClientName = async (clientName) => {
   try {
-    const user = await usersDB.getById(clientName);
+    const user = await usersDB.find({clientName: clientName});
     if (!user) {
       throw new HttpError("Could not find a user for the provided client name", 404);
     }
-    res.json({ adminEmail: user.email });
+    const address = user.email
+    return { address };
   } catch (error) {
-    next(new HttpError("Failed to fetch user. Please try again later.", 500));
+    throw new HttpError("Failed to fetch user. Please try again later.", 500);
   }
 };
 

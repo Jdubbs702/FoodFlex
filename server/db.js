@@ -11,6 +11,7 @@ class DB {
     try {
       await createdItem.save();
     } catch (err) {
+      console.log(err);
       throw new HttpError("Failed to save. Please try again.", 500);
     }
     return createdItem;
@@ -37,13 +38,14 @@ class DB {
     return item;
   };
 
-  getByUserId = async (userId) => {
+  getByClientName = async (clientName) => {
     let itemsArray;
     try {
-      itemsArray = await this.Schema.find({ userId: userId });
+      itemsArray = await this.Schema.find({ clientName: clientName });
     } catch (err) {
       throw new HttpError("Failed to get data. Please try again.", 500);
     }
+    console.log(itemsArray);
     return itemsArray;
   };
 

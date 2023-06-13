@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
-  email: {
+  userEmail: {
     type: String,
     required: true,
     collation: { locale: "en_US", strength: 1 },
