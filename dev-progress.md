@@ -25,10 +25,14 @@
 - Planned out Client Admin Configuration and Client User architectures
 - Updates to Menu routes (still in progress)
 - Created `orders.js` (in `models` directory) for db order model
-- Created `orders.js`(in `routes` directory) for order route
+- Created `orders.js` (in `routes` directory) for order route
 - Created `order-controller.js` for creating new orders
 - Created `email-controller.js`: handles user confirmation and admin notification emails
 
 ## Backend Setup - June 12
 - Tested and de-bugged all endpoints and auth middleware
+- Updated APIs in `order-controller.js`, and `email-controller.js`
+
+## Backend Setup - June 13
+- Started `server-architecture.md`
   
