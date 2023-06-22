@@ -14,17 +14,6 @@ if (fs.existsSync(CONFIG_FILE_PATH)) {
 }
 
 // API endpoint for the client to configure their menu options
-// The API needs to receive an array of category-option pairs that looks like this:
-// [
-//   {
-//     "category": "bread",
-//     "options": ["sourdough", "whole wheat"]
-//   },
-//   {
-//     "category": "sauce",
-//     "options": ["mayo", "mustard", "ketchup"]
-//   },
-// ]
 const configClientMenu = async (req, res) => {
   const clientName = req.params.clientName; // abc123
   try {
@@ -44,13 +33,6 @@ const configClientMenu = async (req, res) => {
         clientConfigurations[clientName][category] = options;
       }
     });
-    // After the request, the clientConfigurations object would look like this:
-    // {
-    //   "abc123": {
-    //     "bread": ["sourdough", "whole wheat"],
-    //     "sauce": ["mayo", "mustard", "ketchup"]
-    //   }
-    // }
 
     // Save the updated client configurations to the file
     fs.writeFileSync(
@@ -87,25 +69,80 @@ const getCommonOptions = (req, res) => {
 };
 
 const menuOptionsDB = {
-  breadTypes: ["Baguette", "Pita", "Sliced"],
-  breadVarieties: ["Sourdough", "Whole Wheat", "White", "Multigrain"],
-  spreads: ["Hummus", "Tahini", "Garlic sauce", "Pesto", "Salsa"],
-  condiments: ["Mayonnaise", "Mustard", "Ketchup", "BBQ sauce", "Hot sauce"],
-  embellishments: [
-    "Cheese",
-    "Egg",
-    "Bacon",
-    "Avocado",
-    "Lettuce",
-    "Tomato",
-    "Cucumber",
-    "Onion",
+  entrees: [
+    {
+      name: "Shawarma",
+      description: "Tender slices of marinated beef or chicken with choice of vegetables and spreads, served in pita bread or lafa."
+    },
+    {
+      name: "Kebab",
+      description: "Grilled skewers of seasoned ground beef or lamb with choice of vegetables and spreads, served in pita bread or lafa."
+    },
+    {
+      name: "Falafel",
+      description: "Falafel balls with choice of vegetables and spreads, served in pita."
+    },
+    {
+      name: "Classic Burger",
+      description: "Juicy beef patty with lettuce, tomato, onion, and your choice of condiments, served on a bun."
+    },
+    {
+      name: "Cheeseburger",
+      description: "Classic burger topped with melted cheese."
+    },
+    {
+      name: "Veggie Burger",
+      description: "Plant-based patty with lettuce, tomato, onion, and your choice of condiments, served on a bun."
+    },
+    {
+      name: "Sweet and Sour Chicken",
+      description: "Crispy chicken pieces coated in a tangy sweet and sour sauce, served with steamed rice."
+    },
+    {
+      name: "Kung Pao Chicken",
+      description: "Stir-fried chicken with peanuts, vegetables, and a spicy Kung Pao sauce, served with steamed rice."
+    },
+    {
+      name: "General Tso's Tofu",
+      description: "Crispy tofu tossed in a savory and sweet General Tso's sauce, served with steamed rice."
+    },
+    {
+      name: "Pastrami Sandwich",
+      description: "Thinly sliced pastrami piled high on rye bread with mustard and pickles."
+    },
+    {
+      name: "Reuben",
+      description: "Grilled sandwich with corned beef, sauerkraut, Swiss cheese, and Russian dressing on rye bread."
+    },
+    {
+      name: "Turkey Club",
+      description: "Triple-decker sandwich with roasted turkey, bacon, lettuce, tomato, and mayonnaise on toasted bread."
+    }
   ],
-  proteins: ["Grilled chicken", "Roast beef", "Turkey", "Tofu"],
-  veggies: ["Bell peppers", "Mushrooms", "Spinach", "Pickles"],
-  spices: ["Salt", "Pepper", "Oregano", "Paprika"],
-  sides: ["French fries", "Side salad", "Sweet potato fries", "Chips"],
-  beverages: ["Soft drinks", "Iced tea", "Lemonade", "Water"],
+  sides: [
+    {
+      greenSalad: {           
+        vegetables: ["Lettuce", "Tomato", "Onion", "Peppers"],
+        toppings: ["cheese", "seed & nut mix", "croutons"],
+        dressing: "oil & balsamic"
+      }
+    }, "French fries", "Sweet potato fries", "Chips", "Egg Rolls", "Steamed Rice"
+  ],
+  breadTypes: ["Baguette", "Pita", "Sliced", "Lafa"],
+  breadVarieties: ["Sourdough", "Whole Wheat", "White", "Multigrain"],
+  spreads: ["Hummus", "Tahini", "Garlic sauce", "Pesto", "Sun-dried tomato spread"],
+  condiments: ["Mayonnaise", "Mustard", "Ketchup", "BBQ sauce", "Hot sauce", "Salsa"],
+  embellishments: ["Cheese", "Egg", "Bacon"],
+  proteins: ["Grilled chicken", "Roast beef", "Turkey", "Tofu", "Lamb", "Roasted chicken", "Ground Beef"],
+  veggies: ["Bell peppers", "Mushrooms", "Spinach", "Pickles", "Avocado", "Lettuce", "Tomato", "Cucumber", "Onion", "Hot peppers"],
+  bevarages: {
+    sodas: {
+      flavors: ["Coca-Cola", "Coke Zero", "Sprite", "Fanta"],
+      sizes: ["Small", "Medium", "Large"]
+    },
+    beers: ["Goldstar", "Heineken", "Corona", "Bud Light", "Guiness"],
+    drinks: ["Water", "Ice Tea", "Limonana"]
+  },
 };
 
 module.exports = {

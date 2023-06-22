@@ -2,7 +2,7 @@ const express = require("express");
 
 const userValidators = require("../validators/userValidators");
 const usersController = require("../controllers/users-controller.js");
-const checkAuth = require("../middleware/check-auth");
+const userAuth = require("../middleware/user-auth");
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.post(
 
 router.get("/:userId", usersController.getAdminEmailByClientName);
 
-router.use(checkAuth); //for logged in users
+router.use(userAuth); //for logged in users
 
 router.put(
   //protected to loggedIn user

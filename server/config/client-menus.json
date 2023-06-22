@@ -1,13 +1,35 @@
 {
   "shawarma_vegas": {
-    "bread": [
-      "sourdough",
-      "whole wheat"
+    "entrees": [
+      {
+        "name": "Shawarma",
+        "description": "Tender slices of slow roasted, seasoned chicken with choice of vegetables and spreads, served in pita bread or lafa."
+      },
+      {
+        "name": "Kebab",
+        "description": "Grilled skewers of seasoned ground beef or lamb with choice of vegetables and spreads, served in pita bread or lafa."
+      },
+      {
+        "name": "Falafel",
+        "description": "Falafel balls with choice of vegetables and spreads, served in pita."
+      }
     ],
-    "sauce": [
-      "mayo",
-      "mustard",
-      "ketchup"
-    ]
+
+    "sides": ["French fries", "Green salad"],
+    "breadTypes": ["Pita", "Lafa"],
+    "breadVarieties": ["White"],
+    "proteins": ["Chicken", "Beef", "Lamb"],
+    "vegetables": ["Israeli salad", "Lettuce", "Tomatoes", "Onion", "Peppers"],
+    "embellishments": ["Cheese", "Egg"],
+    "spreads": ["Tahini", "Hummus", "Schug"],
+    "condiments": ["Chili sauce", "Tobasco", "Ketchup"],
+    "beverages": {
+      "sodas": {
+        "flavors": ["Coke Zero", "Sprite"],
+        "sizes": ["Medium", "Large"]
+      },
+      "beers": ["Goldstar", "Heineken"],
+      "drinks": ["Water", "Limonana"]
+    }
   }
 }

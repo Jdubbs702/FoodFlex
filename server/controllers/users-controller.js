@@ -23,12 +23,16 @@ const userSignup = async (req, res, next) => {
       throw new HttpError("Passwords do not match", 422);
     }
 
-    const nameExists = await usersDB.find({ clientName: { $regex: new RegExp(`^${clientName}$`, "i") } });
+    const nameExists = await usersDB.find({
+      clientName: { $regex: new RegExp(`^${clientName}$`, "i") },
+    });
     if (nameExists) {
       throw new HttpError("Client name already exists", 422);
     }
 
-    const emailExists = await usersDB.find({ email: { $regex: new RegExp(`^${email}$`, "i") } });
+    const emailExists = await usersDB.find({
+      email: { $regex: new RegExp(`^${email}$`, "i") },
+    });
     if (emailExists) {
       throw new HttpError("Email already exists", 422);
     }
@@ -41,16 +45,18 @@ const userSignup = async (req, res, next) => {
     };
     const newUser = await usersDB.add(constructedUser);
 
-    const token = jwt.sign(
-      { userId: newUser.id },
-      secretCode,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ userId: newUser.id }, secretCode, {
+      expiresIn: "1h",
+    });
 
     res.status(201).json({ token: token, clientName: clientName });
   } catch (error) {
     console.error(error);
-    next(new HttpError("Signup failed. Please try again later.", 500));
+    if (error instanceof HttpError) {
+      next(error);
+    } else {
+      next(new HttpError("Signup failed. Please try again later.", 500));
+    }
   }
 };
 
@@ -71,29 +77,38 @@ const userLogin = async (req, res, next) => {
       throw new HttpError("Credentials are incorrect", 403);
     }
 
-    const token = jwt.sign(
-      { userId: identifiedUser.id },
-      secretCode,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ userId: identifiedUser.id }, secretCode, {
+      expiresIn: "1h",
+    });
 
     res.json({ token: token, clientName: identifiedUser.clientName });
   } catch (error) {
-    next(new HttpError("Login failed. Please try again later.", 500));
+    if (error instanceof HttpError) {
+      next(error);
+    } else {
+      next(new HttpError("Login failed. Please try again later.", 500));
+    }
   }
 };
 
 //read
 const getAdminEmailByClientName = async (clientName) => {
   try {
-    const user = await usersDB.find({clientName: clientName});
+    const user = await usersDB.find({ clientName: clientName });
     if (!user) {
-      throw new HttpError("Could not find a user for the provided client name", 404);
+      throw new HttpError(
+        "Could not find a user for the provided client name",
+        404
+      );
     }
-    const address = user.email
+    const address = user.email;
     return { address };
   } catch (error) {
-    throw new HttpError("Failed to fetch user. Please try again later.", 500);
+    if (error instanceof HttpError) {
+      next(error);
+    } else {
+      next(new HttpError("Failed to fetch user. Please try again later.", 500));
+    }
   }
 };
 
@@ -101,7 +116,7 @@ const getAdminEmailByClientName = async (clientName) => {
 const updateUserById = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new HttpError("Invalid inputs", 422));
+    throw new HttpError("Invalid inputs", 422);
   }
 
   const id = req.params.userId;
@@ -130,8 +145,11 @@ const updateUserById = async (req, res, next) => {
   } catch (error) {
     if (error instanceof HttpError) {
       return next(error);
+    } else {
+      next(
+        new HttpError("Failed to update user. Please try again later.", 500)
+      );
     }
-    next(new HttpError("Failed to update user. Please try again later.", 500));
   }
 };
 
@@ -139,5 +157,5 @@ module.exports = {
   userSignup,
   userLogin,
   getAdminEmailByClientName,
-  updateUserById
+  updateUserById,
 };
