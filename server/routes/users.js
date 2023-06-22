@@ -19,13 +19,13 @@ router.post(
   usersController.userLogin
 );
 
-router.get("/:userId", usersController.getAdminEmailByClientName);
+router.get("/adminEmail/:userId", usersController.getAdminEmailByClientName);
 
 router.use(userAuth); //for logged in users
 
 router.put(
   //protected to loggedIn user
-  "/:userId",
+  "/update/:userId",
   userValidators.updateUserValidator,
   usersController.updateUserById
 );
