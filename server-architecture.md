@@ -47,10 +47,10 @@ This document outlines the server architecture for the project. It provides an o
 ### DB Class
 - **Challenge**: Implement a class that provides functions for creating, reading, updating, and deleting data and for querying data based on specific criteria.
 - **Solution**: The DB Class handles data operations by utilizing Mongoose methods and models and includes functions for querying data based on different filters and criteria.
-- **Reason**: Encapsulating database operations within a dedicated class promotes code organization, reusability, and maintainability. Custom querying functions enable flexible data retrieval based on specific.
+- **Reason**: Encapsulating database operations within a dedicated class promotes code organization, reusability, and maintainability. Custom querying functions enable flexible data retrieval based on specific filters.
 ---
 - **Challenge**: Protect sensitive data and handle errors during data operations.
-- **Solution**: Mongoose Query projections are written to exclude sensitive fields, such as passwords from query results. Each call is encapsulated in a try-catch block with the proper error messages.
+- **Solution**: Mongoose Query projections are written to exclude sensitive fields, such as passwords, from query results. Each call is encapsulated in a try-catch block with the proper error messages.
 - **Reason**: The exclusion of sensitive data and proper error handling enhances the security,  robustness and reliability of the application.
 
 ### Users

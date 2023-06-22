@@ -9,7 +9,7 @@
 - Created `DB` class to define DB functions with error handling
 - Created `Http-Error` class (in `models` directory) for custom error handling
 - Created `users` schema, controller, and routes for signup, login, getUser, and updateUser
-- Created `check-auth` middleware
+- Created `user-auth` middleware
 - Created user input validators
 - Created dev progress markdown
 
@@ -35,4 +35,12 @@
 
 ## Backend Setup - June 13
 - Started `server-architecture.md`
+
+# Development Progress - Week 3
+(June 18-24, 2023)
+
+## Backend Setup - June 13
+- Researched Swagger, OpenAPI Specification (OAS), and YAML
+- Began writing FoodFlex API Documentation using OAS
+
   
