@@ -1,3 +1,10 @@
+**Tasks:** Keeping track of things to come back to:
+  - [ ] Complete `server-architecture.md`
+  - [ ] Complete `swagger.yaml`
+    - reconcile request body responses with actual responses
+    - provide better endpoint descriptions
+  - [ ] Write input validations for *menu* and *order* post requests
+
 # Development Progress - Week 1
 (June 4-10, 2023)
 
@@ -42,5 +49,4 @@
 ## Backend Setup - June 13
 - Researched Swagger, OpenAPI Specification (OAS), and YAML
 - Began writing FoodFlex API Documentation using OAS
-
-  
+- Organized `server-architecture.md` and `swagger.yaml` into `docs` directory
