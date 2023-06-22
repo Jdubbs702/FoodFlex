@@ -1,0 +1,273 @@
+openapi: 3.0.3
+info:
+  title: FoodFlex API Documentation
+  description: |-
+    The FoodFlex API provides endpoints to manage restaurant menus, user orders, and client user authentication. 
+  contact:
+    email: jeremyleopold.hw@gmail.com
+  version: 1.0.0
+servers:
+  - url: localhost:5000
+tags:
+  - name: users
+    description: Operations about users
+  - name: menus
+    description: Operations about menus
+  - name: orders
+    description: Operations about orders
+paths:
+  /users/signup:
+    post:
+      tags:
+        - users
+      summary: User signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User registered successfully
+        '422':
+          description: Invalid input data
+        '500':
+          description: Signup failed
+      security:
+        - bearerAuth: []
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User logged in successfully
+        '403':
+          description: Credentials are incorrect
+        '500':
+          description: Login failed
+  /users/adminEmail/{userId}:
+    get:
+      tags:
+        - users
+      summary: Get admin email by client name
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Admin email retrieved successfully
+        '404':
+          description: User not found
+        '500':
+          description: Failed to get admin email
+  /users/update/{userId}:
+    put:
+      tags:
+        - users
+      summary: Update user by ID
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated successfully
+        '400':
+          description: Invalid input data
+        '404':
+          description: User not found
+        '500':
+          description: Update failed
+  /orders/{clientName}:
+    post:
+      tags:
+        - orders
+      summary: Create an order
+      parameters:
+        - in: path
+          name: clientName
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: Order created successfully
+        '400':
+          description: Invalid input data
+        '500':
+          description: Order creation failed
+  /menu/client/{clientName}:
+    get:
+      tags:
+        - menus
+      summary: Get menu options for a client
+      parameters:
+        - in: path
+          name: clientName
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Menu options retrieved successfully
+        '400':
+          description: Invalid client identifier
+        '500':
+          description: Failed to get menu options
+
+  /menu/config/options:
+    get:
+      tags:
+        - menus
+      summary: Get all common menu options
+      responses:
+        '200':
+          description: Common menu options retrieved successfully
+        '500':
+          description: Failed to get common menu options
+
+  /menu/config/{clientName}:
+    post:
+      tags:
+        - menus
+      summary: Configure menu options for a client
+      parameters:
+        - in: path
+          name: clientName
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+      responses:
+        '201':
+          description: Menu configured successfully
+        '400':
+          description: Invalid input data
+        '500':
+          description: Menu configuration failed
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        userEmail:
+          type: string
+          example: 'hungry_person@email.com'
+    Menu: 
+      type: object
+      properties:
+        clientName:
+          type: object
+          properties:
+            entrees:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  description:
+                    type: string
+            sides:
+              type: array
+              items:
+                type: string
+            breadTypes:
+              type: array
+              items:
+                type: string
+            breadVarieties:
+              type: array
+              items:
+                type: string
+            proteins:
+              type: array
+              items:
+                type: string
+            vegetables:
+              type: array
+              items:
+                type: string
+            embellishments:
+              type: array
+              items:
+                type: string
+            spreads:
+              type: array
+              items:
+                type: string
+            condiments:
+              type: array
+              items:
+                type: string
+            beverages:
+              type: object
+              properties:
+                sodas:
+                  type: object
+                  properties:
+                    flavors:
+                      type: array
+                      items:
+                        type: string
+                    sizes:
+                      type: array
+                      items:
+                        type: string
+                beers:
+                  type: array
+                  items:
+                    type: string
+                drinks:
+                  type: array
+                  items:
+                    type: string
+    User:
+      type: object
+      properties:
+        clientName:
+          type: string
+          example: 'Shawarma_Vegas'
+        email:
+          type: string
+          example: 'sv@email.com'
+        password:
+          type: string
+          example: '123456'
+  securitySchemes:
+    bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+    
